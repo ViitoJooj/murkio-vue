@@ -28,3 +28,17 @@ and `MurkioIdentityError`. `class` reaches the real `<input>`/`<button>`. The pl
 tells the template compiler that `<murkio-identity-*>` are custom elements; with SFCs
 compiled by Vite, add `isCustomElement: (tag) => tag.startsWith('murkio-identity-')`
 to `vue({ template: { compilerOptions } })` if you use the tags directly.
+
+## Developing
+
+This repository is a git submodule of the Murkio identity service
+(`libs/external/vue`) and is developed from there: the JavaScript packages share one
+npm workspace, and the tests read the contract, the vectors and the fixtures every Murkio
+SDK shares (`libs/spec`).
+
+```sh
+# in libs/ of the service repository, cloned with --recurse-submodules
+npm ci
+npm run build
+npm test
+```
