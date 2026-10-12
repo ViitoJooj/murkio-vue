@@ -1,5 +1,20 @@
 import { defineElements, init, type AccessClaims, type Me, type Murkio, type MurkioOptions } from '@murkio/html';
-import { computed, defineComponent, h, inject, onBeforeUnmount, onMounted, ref, shallowRef, watch, type App, type ComponentObjectPropsOptions, type InjectionKey, type PropType, type ShallowRef } from 'vue';
+import {
+  computed,
+  defineComponent,
+  h,
+  inject,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  shallowRef,
+  watch,
+  type App,
+  type ComponentObjectPropsOptions,
+  type InjectionKey,
+  type PropType,
+  type ShallowRef,
+} from 'vue';
 
 const MURKIO: InjectionKey<ShallowRef<Murkio | null>> = Symbol('murkio');
 
@@ -86,13 +101,16 @@ function element(tag: string, props: ComponentObjectPropsOptions, withEvents = f
     emits: withEvents ? [...EVENTS] : [],
     setup(componentProps: Record<string, unknown>, { emit, slots }) {
       const node = ref<HTMLElement | null>(null);
-      const listeners = EVENTS.map((name) => [
-        `murkio-${name}`,
-        (event: Event) => emit(name, name === 'step' ? (event as CustomEvent<{ step: string }>).detail.step : (event as CustomEvent).detail),
-      ] as const);
+      const listeners = EVENTS.map(
+        (name) => [`murkio-${name}`, (event: Event) => emit(name, name === 'step' ? (event as CustomEvent<{ step: string }>).detail.step : (event as CustomEvent).detail)] as const,
+      );
       if (withEvents) {
-        onMounted(() => listeners.forEach(([name, listener]) => node.value?.addEventListener(name, listener)));
-        onBeforeUnmount(() => listeners.forEach(([name, listener]) => node.value?.removeEventListener(name, listener)));
+        onMounted(() => {
+          for (const [name, listener] of listeners) node.value?.addEventListener(name, listener);
+        });
+        onBeforeUnmount(() => {
+          for (const [name, listener] of listeners) node.value?.removeEventListener(name, listener);
+        });
       }
       return () => {
         const attributes: Record<string, unknown> = { ref: node };
@@ -109,11 +127,7 @@ function element(tag: string, props: ComponentObjectPropsOptions, withEvents = f
 const fieldProps = { form: String, placeholder: String, label: String, autocomplete: String };
 
 /** The login canvas designed in the dashboard. Emits `login`, `error` (MurkioError) and `step`. */
-export const MurkioIdentityCanvas = element(
-  'murkio-identity-canvas',
-  { screen: String as PropType<'sign_in' | 'sign_up'>, locale: String, lightDom: Boolean },
-  true,
-);
+export const MurkioIdentityCanvas = element('murkio-identity-canvas', { screen: String as PropType<'sign_in' | 'sign_up'>, locale: String, lightDom: Boolean }, true);
 export const MurkioIdentityEmailInput = element('murkio-identity-email-input', fieldProps);
 export const MurkioIdentityPasswordInput = element('murkio-identity-password-input', fieldProps);
 export const MurkioIdentityKeepLogged = element('murkio-identity-keep-logged', { form: String, label: String, checked: Boolean });

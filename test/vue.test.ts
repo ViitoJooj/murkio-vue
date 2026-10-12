@@ -28,12 +28,25 @@ afterEach(() => {
 describe('@murkio/vue', () => {
   it('follows the session with useAuth', async () => {
     let auth: ReturnType<typeof useAuth> | null = null;
-    mount(defineComponent({ setup() { auth = useAuth(); return () => h('p', auth!.isSignedIn.value ? 'in' : 'out'); } }));
+    mount(
+      defineComponent({
+        setup() {
+          auth = useAuth();
+          return () => h('p', auth!.isSignedIn.value ? 'in' : 'out');
+        },
+      }),
+    );
     expect(auth!.isLoaded.value).toBe(true);
     expect(document.body.textContent).toBe('out');
 
     getMurkio()!.session.setSession(
-      { access_token: jwt({ sub: 'u', sid: 's', exp: Math.floor(Date.now() / 1000) + 900, roles: [] }), token_type: 'Bearer', expires_in: 900, refresh_token: 'rt', session_id: 's' },
+      {
+        access_token: jwt({ sub: 'u', sid: 's', exp: Math.floor(Date.now() / 1000) + 900, roles: [] }),
+        token_type: 'Bearer',
+        expires_in: 900,
+        refresh_token: 'rt',
+        session_id: 's',
+      },
       true,
     );
     await nextTick();
