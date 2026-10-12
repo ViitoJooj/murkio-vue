@@ -1,0 +1,6 @@
+# The runtime dependencies this SDK ships with, one per line, each with the
+# reason it is needed. infra/pipeline/verify_dependencies.py fails when the
+# manifest and this list disagree.
+
+@murkio/html # the web components and the session client these Vue components wrap
+vue          # peer: the application's own Vue
